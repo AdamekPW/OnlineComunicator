@@ -141,6 +141,10 @@ class Server {
                     case "User": 
                         model = JsonConvert.DeserializeObject<User>(JsonString);;
                         break;
+                    case "Message":
+                        Message message = JsonConvert.DeserializeObject<Message>(JsonString);
+                        Console.WriteLine(message.Data);
+                        break;
                     default: 
                         model = null;
                         break;

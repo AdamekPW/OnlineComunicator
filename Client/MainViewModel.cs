@@ -6,7 +6,7 @@ namespace Communicator
 	public class MainViewModel : INotifyPropertyChanged
 	{
 		
-
+		public CustomClient customClient = new();
 		
 
 		public MainViewModel()

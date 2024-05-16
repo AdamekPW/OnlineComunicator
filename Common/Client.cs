@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
-class CustomClient
+public class CustomClient
 {
     public string ServerIP { get; set; } = null!;
 	public int ServerPort { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 
 
-public class Message : INotifyPropertyChanged
+public class Message : Model, INotifyPropertyChanged
 {
     private DateTime _date;
     private string _data = string.Empty;
@@ -53,16 +53,16 @@ public class Message : INotifyPropertyChanged
         }
     }
 
-    public Message()
+    public Message() : base(typeof(Message))
     {
         this.Date = DateTime.Now;
     }
 
-    public Message(string Data){
+    public Message(string Data) : base(typeof(Message)){
         this.Data = Data;
         this.Date = DateTime.Now;
     }
-    public Message(string Data, DateTime Date, string Username, bool IsMyMessage = false)
+    public Message(string Data, DateTime Date, string Username, bool IsMyMessage = false) : base(typeof(Message))
     {
         this.Data = Data;
         this.Date = Date;
