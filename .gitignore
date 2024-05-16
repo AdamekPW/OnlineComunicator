@@ -1,0 +1,99 @@
+# .NET
+# Visual Studio Code
+**/.vscode/
+
+# build artifacts
+**/bin/
+**/obj/
+
+# User-specific files
+**/*.rsuser
+**/*.suo
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+
+# Rider
+**/.idea/
+**/*.sln.iml
+
+# Resharper
+**/_ReSharper*/
+**/*.[Rr]e[Ss]harper
+**/*.DotSettings.user
+
+# Test results
+**/[Tt]est[Rr]esult*/
+**/[Bb]uild[Ll]og.*
+
+# NuGet Packages
+**/*.nupkg
+**/*.paket/paket.exe
+**/paket-files/
+# Include directory packages
+!**/**/packages/
+# Include directory .NET Core Runtime store
+!**/packages/
+
+# Build results
+**/[Dd]ebug/
+**/[Rr]elease/
+**/x64/
+**/x86/
+**/[Aa][Rr][Mm]/
+**/[Aa][Rr]64/
+**/[Oo]bj/
+**/[Ll]og/
+**/[Ll]ogs/
+**/[Bb]uild/
+
+# Roslyn cache directories
+**/*.ide/
+
+# Rider
+**/.idea/
+**/*.sln.iml
+
+# Visual Studio Code
+**/.vscode/
+
+# User-specific files
+**/*.rsuser
+**/*.suo
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+**/*.userprefs
+
+# Mono Auto Generated Files
+**/mono_crash.*
+
+# Windows image file caches
+**/Thumbs.db
+**/ehthumbs.db
+
+# Folder config file
+**/Desktop.ini
+
+# Recycle Bin used on file shares
+**/$RECYCLE.BIN/
+
+# Visual Studio Code folders
+**/.vscode/
+
+# Windows Installer files
+**/*.cab
+**/*.msi
+**/*.msm
+**/*.msp
+
+# Windows shortcuts
+**/*.lnk
+
+# macOS
+**/.DS_Store
+
+# Linux
+**/[Tt]humbs.db
