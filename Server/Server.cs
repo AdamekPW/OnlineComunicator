@@ -9,7 +9,7 @@ class Server {
     public string ServerIP {get; set;}
     public int ServerPort {get; set;}
 
-    public List<string> ActiveUsers = new();
+    public List<TcpClient> TcpClients = new();    
     Thread ServerThread = null!;
     Process? TunnelProcess = null;
     
@@ -63,7 +63,7 @@ class Server {
             while (IsServerRunning){
                 if (server.Pending()){
                     
-
+                    
                     TcpClient client = server.AcceptTcpClient();
                     Console.WriteLine("Nowe połączenie!");
                     
