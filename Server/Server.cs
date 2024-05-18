@@ -5,11 +5,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
-class Server {
+public partial class Server  {
     public string ServerIP {get; set;}
     public int ServerPort {get; set;}
 
-    public List<TcpClient> TcpClients = new();    
+    public List<FullClient> Clients = new(); 
+
+
+
     Thread ServerThread = null!;
     Process? TunnelProcess = null;
     
@@ -64,21 +67,22 @@ class Server {
                 if (server.Pending()){
                     
                     
-                    TcpClient client = server.AcceptTcpClient();
+                    TcpClient testClient = server.AcceptTcpClient();   
                     Console.WriteLine("Nowe połączenie!");
-                    
-                    Model? model = HandleClient(client);
-                    if (model != null){
-                        Console.WriteLine(model.type + " " + model.GetType());
-                        if (model.GetType() == typeof(User)){
-                            User m = (User)model;
-                            Console.WriteLine(m.Username);
-                        }
-                    }
+                    FullClient fullClient = new FullClient(testClient);
 
-                    client.Close();
-                
+                    //logowanie
+                    Model? model = HandleClient(testClient);
+                    if (model == null || model.GetType() != typeof(User)) continue;
+
                    
+                    User user = (User)model;
+                    Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
+                    string res = Login(user) == true ? "Zalogowano pomyslnie" : "Zle haslo"; 
+                    
+                    byte[] msg = Encoding.ASCII.GetBytes(res);
+                    var stream = testClient.GetStream();    
+                    stream.Write(msg);
                     
                 }     
 				
@@ -114,54 +118,5 @@ class Server {
     }
 
 
-    public Model? HandleClient(TcpClient client)
-	{
-		Model? model = null;
-		NetworkStream stream = null!;
-		try
-		{
-			stream = client.GetStream();
-
-			byte[] buffer = new byte[1024];
-			int bytesRead;
-			string JsonString = "";
-			
-			while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-			{
-				JsonString += Encoding.UTF8.GetString(buffer, 0, bytesRead);
-				if (bytesRead < buffer.Length)
-				{
-					break;
-				}
-			}
-			dynamic? m = JsonConvert.DeserializeObject(JsonString);
-            if (m != null){
-                Type type = (Type)m["type"];
-                switch (type.ToString()){
-                    case "User": 
-                        model = JsonConvert.DeserializeObject<User>(JsonString);;
-                        break;
-                    case "Message":
-                        Message message = JsonConvert.DeserializeObject<Message>(JsonString);
-                        Console.WriteLine(message.Data);
-                        break;
-                    default: 
-                        model = null;
-                        break;
-                }
-            }
-               
-            
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine("Błąd obsługi klienta: " + e.Message);
-		}
-		finally
-		{
-			stream.Close();
-			client.Close();
-		}
-		return model;
-	}
+    
 }

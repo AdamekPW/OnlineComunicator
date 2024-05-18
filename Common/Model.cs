@@ -2,7 +2,7 @@
 using System.Dynamic;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
-
+using System.Linq;
 
 public class Model {
     
@@ -28,6 +28,8 @@ public class Model {
         string jsonData = JsonConvert.SerializeObject(this, Formatting.Indented);
         File.WriteAllText(ModelPath, jsonData);
     }
+
+    
     
 
 }
@@ -39,23 +41,21 @@ public class ModelList<T>: List<T> where T : Model {
         FilePath = Path.Combine(Database.DatabasePath, typeof(T).Name + 's');
     }
 
-    public void Read(string FileName){
-        foreach (T model in this){
-            if (model.FileName == FileName){
-                this.Add(model);
-            }
-        }
-       
+    public new void Add(T model){
+        model.Save();
+    }
+    public T? Read(string FileName){
+
         string ModelPath = Path.Combine(FilePath, FileName + ".json");
         if (!File.Exists(ModelPath)){
             Console.WriteLine($"File {FileName}.json doesn't exists in the {typeof(T).Name}s folder");
-            return;
+            return null;
         }
         
         string jsonData = File.ReadAllText(ModelPath);
         T? Result = JsonConvert.DeserializeObject<T>(jsonData);
 
-        return;
+        return Result;
     }
 
     public void SaveAll(){
@@ -67,3 +67,4 @@ public class ModelList<T>: List<T> where T : Model {
     }
 
 }
+

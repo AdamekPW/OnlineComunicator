@@ -2,14 +2,14 @@ using System.IO;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
-
+using System.Linq;
 public class Database : IDisposable {
     private static readonly string DatabaseDirectory = "Database";
     public static readonly string DatabasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DatabaseDirectory);
     public ModelList<User> Users = new();
     public ModelList<Chat> Chats = new();
 
-    public Sequence UsersSequence = Sequence.Read("UsersSequence");
+    //public Sequence UsersSequence = Sequence.Read("UsersSequence");
     
     public Database(){
         
@@ -31,15 +31,9 @@ public class Database : IDisposable {
         DictInit(Sequence.FilePath);
       
     }
-
-    public void SaveChanges(){
-        Users.SaveAll();
-        Chats.SaveAll();
-        UsersSequence.Save();
-    }
     public void Dispose()
     {
-        SaveChanges();
+        //SaveChanges();
 
     }
 }
@@ -72,7 +66,6 @@ public class Sequence : Model {
 
     public static Sequence Read(string FileName){
         string ModelPath = Path.Combine(Database.DatabasePath, "Sequences",  FileName + ".json");
-        Console.WriteLine(ModelPath);
         if (!File.Exists(ModelPath)){
             Console.WriteLine($"File {FileName}.json doesn't exists in the Sequences folder");
             return new Sequence(0, 1, FileName);
