@@ -7,7 +7,8 @@ server.Start();
 Console.ReadLine();
 CustomClient client = new CustomClient();
 client.Login(Adam);
-Console.ReadLine();
-client.Login(Adam);
-//server.Stop();
+
+
+Console.WriteLine(server.Clients.Count);
+server.Stop();
 

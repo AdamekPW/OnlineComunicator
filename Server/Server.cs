@@ -75,24 +75,32 @@ public partial class Server  {
                     Model? model = HandleClient(testClient);
                     if (model == null || model.GetType() != typeof(User)) continue;
 
-                   
                     User user = (User)model;
                     Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
-                    string res = Login(user) == true ? "Zalogowano pomyslnie" : "Zle haslo"; 
+    
+                    if (!Login(user)){
+                        fullClient.SendASCII("Zle haslo");
+                        continue;
+                    } 
+                    fullClient.SendASCII("Zalogowano pomyslnie");
                     
-                    byte[] msg = Encoding.ASCII.GetBytes(res);
-                    var stream = testClient.GetStream();    
-                    stream.Write(msg);
+                    fullClient.user = user;
+                    fullClient.Run();
+                    
+                    Clients.Add(fullClient);
+
                     
                 }     
 				
             }
+            
         }
         catch (Exception e){
             Console.WriteLine("Błąd: " + e.Message);
         }
         finally {
             server.Stop();
+            Clients.Clear();
         }
     }
 
