@@ -31,6 +31,22 @@ public class CustomClient : NetworkStreamManager
         Send(user);
         string res = ReadASCII();
         Console.WriteLine(res);
+        ReadAndShow();
+    }
+
+    public void ReadAndShow(){
+        while (true){
+            if (stream.CanRead && stream.DataAvailable){
+					
+                Model? model = Read();
+                if (model == null) continue;
+                Model Data = model;
+                if (model.type == typeof(Message)){
+                    Message m = (Message)model;
+                    Console.WriteLine(m.Data);
+                }
+            } 
+        }
     }
    
     

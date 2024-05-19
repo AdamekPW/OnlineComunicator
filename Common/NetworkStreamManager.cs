@@ -29,6 +29,50 @@ public class NetworkStreamManager {
             Console.WriteLine("Error: " + e.Message);
         } 
     }
+
+    public Model? Read(){
+        Model? model = null;
+		try
+		{	
+			byte[] buffer = new byte[1024];
+			int bytesRead;
+			string JsonString = "";
+			
+			while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+			{
+				JsonString += Encoding.UTF8.GetString(buffer, 0, bytesRead);
+				if (bytesRead < buffer.Length)
+				{
+					break;
+				}
+			}
+			
+			dynamic? m = JsonConvert.DeserializeObject(JsonString);
+            
+            if (m != null){
+                Console.WriteLine(m);
+                Type type = (Type)m["type"];
+                switch (type.ToString()){
+                    case "User": 
+                        model = JsonConvert.DeserializeObject<User>(JsonString);
+                        break;
+                    case "Message":
+                        model = JsonConvert.DeserializeObject<Message>(JsonString);
+                        break;
+                    default: 
+                        model = null;
+                        break;
+                }	
+            }      
+            
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine("Błąd obsługi klienta: " + e.Message);
+		} 
+        
+        return model;
+    }
     public void SendASCII(string data){
         byte[] msg = Encoding.ASCII.GetBytes(data);
         stream.Write(msg);
