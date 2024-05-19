@@ -100,11 +100,12 @@ public class FullClient : NetworkStreamManager {
 				} 
 			}
 		});
+
 		Task.Run(async () => {
 			while (true){
 				Console.WriteLine("chodzi");
 				Send(new Message("Hello"));
-				await Task.Delay(1000);
+				await Task.Delay(10000);
 
 			}
 		});

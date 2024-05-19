@@ -65,29 +65,36 @@ public partial class Server  {
 
             while (IsServerRunning){
                 if (server.Pending()){
-                    
-                    
-                    TcpClient testClient = server.AcceptTcpClient();   
-                    Console.WriteLine("Nowe połączenie!");
-                    FullClient fullClient = new FullClient(testClient);
+                    bool IsRead = false;
+                    TcpClient _client = server.AcceptTcpClient();   
+                    Console.WriteLine("Client Task started");
+                    Task.Run(() => {
+                        TcpClient client = _client;
+                        IsRead = true;
+                        Console.WriteLine("Nowe połączenie!");
+                        FullClient fullClient = new FullClient(client);
 
-                    //logowanie
-                    Model? model = HandleClient(testClient);
-                    if (model == null || model.GetType() != typeof(User)) continue;
+                        //logowanie
+                        Model? model = HandleClient(client);
+                        if (model == null || model.GetType() != typeof(User)) return;
 
-                    User user = (User)model;
-                    Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
-    
-                    if (!Login(user)){
-                        fullClient.SendASCII("Zle haslo");
-                        continue;
-                    } 
-                    fullClient.SendASCII("Zalogowano pomyslnie");
+                        User user = (User)model;
+                        Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
+        
+                        if (!Login(user)){
+                            fullClient.SendASCII("Zle haslo");
+                            return;
+                        } 
+                        fullClient.SendASCII("Zalogowano pomyslnie");
+                        
+                        fullClient.user = user;
+                        fullClient.Run();
+                        
+                        Clients.Add(fullClient);
+                    });
+                    while (!IsRead){};
                     
-                    fullClient.user = user;
-                    fullClient.Run();
                     
-                    Clients.Add(fullClient);
 
                     
                 }     
