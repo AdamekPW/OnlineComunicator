@@ -9,6 +9,9 @@ public class NetworkStreamManager {
     public NetworkStreamManager(NetworkStream stream){
         this.stream = stream;
     }
+    ~NetworkStreamManager(){
+        stream.Close();
+    }
     public void Send(Model model){                   
         try {
         

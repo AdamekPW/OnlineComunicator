@@ -8,15 +8,7 @@ using System.Text;
 public class FullClient : NetworkStreamManager {
 	public TcpClient tcpClient;
 	public User user = null!;
-	public FullClient(string ServerIP, int ServerPort){
-		tcpClient = new TcpClient(ServerIP, ServerPort);
-		this.stream = tcpClient.GetStream();
-		Run();
-	}
-	public FullClient(TcpClient tcpClient){
-		this.tcpClient = tcpClient;
-		this.stream = tcpClient.GetStream();
-	}
+
 	//for sending data
 	private bool _isSendDataAvailable = false;
 	private ReaderWriterLockSlim _isSendDataAvailableLock = new();
@@ -40,7 +32,6 @@ public class FullClient : NetworkStreamManager {
 		_sendDataQueue.Enqueue(model);
 		IsSendDataAvailable = true;
 		_sendDataQueueLock.Release();
-		
 	}	
 	
 
@@ -66,10 +57,8 @@ public class FullClient : NetworkStreamManager {
 	private SemaphoreSlim _receiveDataQueueLock = new(1);
 	public Model Data {
 		get {
-			Console.WriteLine("-1");
 			_receiveDataQueueLock.Wait();
 			Model model = _receiveDataQueue.Dequeue();
-			Console.WriteLine("-2");
 			if (_receiveDataQueue.Count == 0) IsDataAvailable = false;
 			_receiveDataQueueLock.Release();
 			return model;
@@ -101,24 +90,23 @@ public class FullClient : NetworkStreamManager {
 		});
 		_receiveTask = Task.Run(() => {
 			while (!_isReceiveTaskShouldEnd){
-				//if (stream.CanRead && stream.DataAvailable){
+				if (stream.CanRead && stream.DataAvailable){
 					
-					Model? model = this.Read();
-					Console.WriteLine("Cos przeczytano");
+					Model? model = Read();
 					if (model == null) continue;
 					Data = model;
-				//} 
+				} 
 			}
 		});
 
-		// Task.Run(async () => {
-		// 	while (true){
-		// 		Console.WriteLine("chodzi");
-		// 		Send(new Message("Hello"));
-		// 		await Task.Delay(10000);
+		Task.Run(async () => {
+			while (true){
+				Console.WriteLine("chodzi");
+				Send(new Message("Hello"));
+				await Task.Delay(10000);
 				
-		// 	}
-		// });
+			}
+		});
 	}
 	public void Stop(){
 		_isSendTaskShouldEnd = true;
@@ -126,6 +114,10 @@ public class FullClient : NetworkStreamManager {
 	}
 	
 
+	public FullClient(TcpClient tcpClient){
+		this.tcpClient = tcpClient;
+		this.stream = tcpClient.GetStream();
+	}
 }
 public partial class Server {
 
@@ -197,9 +189,5 @@ public partial class Server {
 		return model;
 	}
 
-	public void Broadcast(string Message){
-		foreach (var element in Clients){
-			element.SendASCII(Message);
-		}
-	}
+	
 }

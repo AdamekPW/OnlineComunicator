@@ -22,7 +22,12 @@ public class CustomClient : NetworkStreamManager
         tcpClient = new TcpClient(ServerIP, ServerPort);
         stream = tcpClient.GetStream();
 	}
-
+    
+    ~CustomClient()
+    {
+        tcpClient.Close();
+        stream.Close(); 
+    }
 
     public void Login(User user)
     {
@@ -31,7 +36,7 @@ public class CustomClient : NetworkStreamManager
         Send(user);
         string res = ReadASCII();
         Console.WriteLine(res);
-        ReadAndShow();
+        //ReadAndShow();
     }
 
     public void ReadAndShow(){

@@ -67,15 +67,17 @@ public partial class Server  {
                 if (server.Pending()){
                     bool IsRead = false;
                     TcpClient _client = server.AcceptTcpClient();   
-                    Console.WriteLine("Client Task started");
                     Task.Run(() => {
                         TcpClient client = _client;
                         IsRead = true;
                         Console.WriteLine("Nowe połączenie!");
                         FullClient fullClient = new FullClient(client);
-
-                        //logowanie
-                        Model? model = HandleClient(client);
+                        
+                        //Model? model = fullClient.Read();
+                        //logowanie (serwer)
+                        while (!fullClient.IsDataAvailable){};
+                        Model? model = fullClient.Data;
+                        Console.WriteLine("3");
                         if (model == null || model.GetType() != typeof(User)) return;
 
                         User user = (User)model;
@@ -91,6 +93,7 @@ public partial class Server  {
                         fullClient.Run();
                         
                         Clients.Add(fullClient);
+                        Console.WriteLine(Clients.Count);
                     });
                     while (!IsRead){};
                     

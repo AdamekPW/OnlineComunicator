@@ -1,14 +1,19 @@
 ﻿
+using System.Net.Sockets;
+
 User Adam = new User("Adam", "Adasek");
 
 
 Server server = new Server();
 server.Start();
 Console.ReadLine();
-CustomClient client = new CustomClient();
-client.Login(Adam);
+FullClient fullClient = new("127.0.0.1", 48025);
+Console.ReadLine();
+Console.WriteLine("Wysylanie");
+fullClient.Send(Adam);
+Console.WriteLine("Wyslano");
 
-
+Console.ReadLine();
 Console.WriteLine(server.Clients.Count);
 server.Stop();
 
