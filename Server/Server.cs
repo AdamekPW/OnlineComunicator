@@ -68,15 +68,18 @@ public partial class Server  {
                     bool IsRead = false;
                     TcpClient _client = server.AcceptTcpClient();   
                     Task.Run(() => {
+                        FullClient fullClient = new FullClient(_client);
                         TcpClient client = _client;
                         IsRead = true;
                         Console.WriteLine("Nowe połączenie!");
-                        FullClient fullClient = new FullClient(client);
+    
                         
-                        //Model? model = fullClient.Read();
+
+                
                         //logowanie (serwer)
                         while (!fullClient.IsDataAvailable){};
                         Model? model = fullClient.Data;
+                        
                         Console.WriteLine("3");
                         if (model == null || model.GetType() != typeof(User)) return;
 
@@ -84,13 +87,12 @@ public partial class Server  {
                         Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
         
                         if (!Login(user)){
-                            fullClient.SendASCII("Zle haslo");
+                            //fullClient.SendASCII("Zle haslo");
                             return;
                         } 
-                        fullClient.SendASCII("Zalogowano pomyslnie");
+                        //fullClient.SendASCII("Zalogowano pomyslnie");
                         
                         fullClient.user = user;
-                        fullClient.Run();
                         
                         Clients.Add(fullClient);
                         Console.WriteLine(Clients.Count);

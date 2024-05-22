@@ -16,6 +16,7 @@ public class FullClient : NetworkStreamManager {
 	public FullClient(TcpClient tcpClient){
 		this.tcpClient = tcpClient;
 		this.stream = tcpClient.GetStream();
+		Run();
 	}
 	//for sending data
 	private bool _isSendDataAvailable = false;
@@ -66,10 +67,9 @@ public class FullClient : NetworkStreamManager {
 	private SemaphoreSlim _receiveDataQueueLock = new(1);
 	public Model Data {
 		get {
-			Console.WriteLine("-1");
+			if (_receiveDataQueue.Count == 0) throw new Exception("No data available");
 			_receiveDataQueueLock.Wait();
 			Model model = _receiveDataQueue.Dequeue();
-			Console.WriteLine("-2");
 			if (_receiveDataQueue.Count == 0) IsDataAvailable = false;
 			_receiveDataQueueLock.Release();
 			return model;
@@ -86,6 +86,7 @@ public class FullClient : NetworkStreamManager {
 	private Task _sendTask = null!; 
 	private Task _receiveTask = null!;
 	private bool _isSendTaskShouldEnd, _isReceiveTaskShouldEnd;
+
 	public void Run(){
 		_sendTask = Task.Run(() => {
 			while (!_isSendTaskShouldEnd){
@@ -96,29 +97,25 @@ public class FullClient : NetworkStreamManager {
 					_sendDataQueueLock.Release();
 					base.Send(model);
 				}
+			
 			}
 			
 		});
-		_receiveTask = Task.Run(() => {
+		_receiveTask = Task.Run(async () => {
 			while (!_isReceiveTaskShouldEnd){
-				//if (stream.CanRead && stream.DataAvailable){
-					
-					Model? model = this.Read();
-					Console.WriteLine("Cos przeczytano");
+				await Task.Delay(50);
+				if (stream.CanRead && stream.DataAvailable){
+					Model? model = base.Read();
 					if (model == null) continue;
 					Data = model;
-				//} 
+					
+				}
 			}
-		});
 
-		// Task.Run(async () => {
-		// 	while (true){
-		// 		Console.WriteLine("chodzi");
-		// 		Send(new Message("Hello"));
-		// 		await Task.Delay(10000);
-				
-		// 	}
-		// });
+		});
+		
+
+
 	}
 	public void Stop(){
 		_isSendTaskShouldEnd = true;
