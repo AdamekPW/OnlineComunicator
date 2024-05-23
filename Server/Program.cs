@@ -6,15 +6,23 @@ User Adam = new User("Adam", "Adasek");
 
 Server server = new Server();
 server.Start();
-Console.ReadLine();
-FullClient fullClient = new("127.0.0.1", 48025);
-Console.ReadLine();
-Console.WriteLine("Wysylanie");
-//fullClient.SendASCII("Hello from ASCII");
-fullClient.Send(Adam);
-Console.WriteLine("Wyslano");
+while (true){
+    if (server.Clients.Count == 1){
+        while (!server.Clients[0].IsDataAvailable){};
+        Model model = server.Clients[0].Data;
+        if (model.type == typeof(Message)){
+            Message message = (Message)model;
+            message.Data += " - from server";
+            server.Clients[0].Send(message);
+        }
+    }
+}
+// Console.ReadLine();
+// FullClient fullClient = new("127.0.0.1", 48025);
 
-Console.ReadLine();
-Console.WriteLine(server.Clients.Count);
-server.Stop();
+// fullClient.Send(Adam);
+
+// Console.WriteLine(server.Clients.Count);
+// await Task.Delay(4000);
+// server.Stop();
 

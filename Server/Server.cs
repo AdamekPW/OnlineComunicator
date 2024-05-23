@@ -73,24 +73,21 @@ public partial class Server  {
                         IsRead = true;
                         Console.WriteLine("Nowe połączenie!");
     
-                        
-
                 
                         //logowanie (serwer)
                         while (!fullClient.IsDataAvailable){};
                         Model? model = fullClient.Data;
                         
-                        Console.WriteLine("3");
                         if (model == null || model.GetType() != typeof(User)) return;
 
                         User user = (User)model;
                         Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
         
                         if (!Login(user)){
-                            //fullClient.SendASCII("Zle haslo");
+                            fullClient.Send(new Message("Zle haslo"));
                             return;
                         } 
-                        //fullClient.SendASCII("Zalogowano pomyslnie");
+                        fullClient.Send(new Message("Zalogowano pomyslnie"));
                         
                         fullClient.user = user;
                         

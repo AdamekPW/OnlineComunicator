@@ -16,14 +16,16 @@ namespace Communicator;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainViewModel MainViewModel;
+	MainViewModel MainViewModel;
     public MainWindow()
     {
-        InitializeComponent();
+        InitializeComponent(); 
         this.ResizeMode = ResizeMode.NoResize;
-        MainViewModel = new MainViewModel();
-        DataContext = MainViewModel;
+		MainViewModel = new MainViewModel();
+
+		DataContext = MainViewModel;
         PreviewKeyDown += MessageTextBox_KeyDown;
+		MainViewModel.Init();
 	}
 
 	private void MessageTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -45,8 +47,8 @@ public partial class MainWindow : Window
 		string text = MessageTextBox.Text.Trim();
 		if (text.Length == 0) return; 
 		Message message = new Message(text, DateTime.Now, "Adam", true);
-        MainViewModel.AddMessage(message);
+        //MainViewModel.AddMessage(message);
         MessageTextBox.Text = "";
-        //MainViewModel.fullClient.Send(message);
+        MainViewModel.fullClient.Send(message);
 	}
 }
