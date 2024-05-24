@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Net.Sockets;
+using Accessibility;
 
 namespace Communicator
 {
@@ -9,7 +11,7 @@ namespace Communicator
 
 		//public CustomClient customClient = new();
 		public FullClient fullClient;
-
+		private Task ServerTask;
 		public User Me = new("Adam", "Adasek");
 		public MainViewModel()
 		{
@@ -23,10 +25,12 @@ namespace Communicator
 			fullClient = new("127.0.0.1", 48025);
 			fullClient.Send(Me);
 			Messages = new ObservableCollection<Message>();
-			Task.Run(() =>
+			ServerTask = Task.Run(() =>
 			{
+
 				while (true)
 				{
+
 					while (!fullClient.IsDataAvailable) { };
 					Model model = fullClient.Data;
 					if (model.type == typeof(Message))
@@ -36,10 +40,10 @@ namespace Communicator
 						if (message.Username == Me.Username) message.IsMyMessage = true;
 						else message.IsMyMessage = false;
 
-						AddMessage(message);
+						Application.Current.Dispatcher.Invoke(() => AddMessage(message));
 
 					}
-					
+
 				}
 			});
 		}
