@@ -5,15 +5,15 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-public class FullClient : NetworkStreamManager {
+public class ServerClient : NetworkStreamManager {
 	public TcpClient tcpClient;
 	public User user = null!;
-	public FullClient(string ServerIP, int ServerPort){
+	public ServerClient(string ServerIP, int ServerPort){
 		tcpClient = new TcpClient(ServerIP, ServerPort);
 		this.stream = tcpClient.GetStream();
 		Run();
 	}
-	public FullClient(TcpClient tcpClient){
+	public ServerClient(TcpClient tcpClient){
 		this.tcpClient = tcpClient;
 		this.stream = tcpClient.GetStream();
 		Run();

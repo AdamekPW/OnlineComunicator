@@ -10,7 +10,7 @@ namespace Communicator
 	{
 
 		//public CustomClient customClient = new();
-		public FullClient fullClient;
+		public Client client;
 		private Task ServerTask;
 		public User Me = new("Adam", "Adasek");
 		public MainViewModel()
@@ -22,8 +22,8 @@ namespace Communicator
 		}
 		public void Init()
 		{
-			fullClient = new("127.0.0.1", 48025);
-			fullClient.Send(Me);
+			client = new("127.0.0.1", 48025);
+			client.Send(Me);
 			Messages = new ObservableCollection<Message>();
 			ServerTask = Task.Run(() =>
 			{
@@ -31,8 +31,8 @@ namespace Communicator
 				while (true)
 				{
 
-					while (!fullClient.IsDataAvailable) { };
-					Model model = fullClient.Data;
+					while (!client.IsDataAvailable) { };
+					Model model = client.Data;
 					if (model.type == typeof(Message))
 					{
 						Message message = (Message)model;

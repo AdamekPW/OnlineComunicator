@@ -49,6 +49,6 @@ public partial class MainWindow : Window
 		Message message = new Message(text, DateTime.Now, "Adam", true);
         //MainViewModel.AddMessage(message);
         MessageTextBox.Text = "";
-        MainViewModel.fullClient.Send(message);
+        MainViewModel.client.Send(message);
 	}
 }

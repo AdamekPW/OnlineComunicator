@@ -9,8 +9,8 @@ public partial class Server  {
     public string ServerIP {get; set;}
     public int ServerPort {get; set;}
 
-    public List<FullClient> Clients = new(); 
-
+    public List<ServerClient> Clients = new(); 
+    public List<Chat> ActiveChats = new();
 
 
     Thread ServerThread = null!;
@@ -68,15 +68,15 @@ public partial class Server  {
                     bool IsRead = false;
                     TcpClient _client = server.AcceptTcpClient();   
                     Task.Run(() => {
-                        FullClient fullClient = new FullClient(_client);
+                        ServerClient ServerClient = new ServerClient(_client);
                         TcpClient client = _client;
                         IsRead = true;
                         Console.WriteLine("Nowe połączenie!");
     
                 
                         //logowanie (serwer)
-                        while (!fullClient.IsDataAvailable){};
-                        Model? model = fullClient.Data;
+                        while (!ServerClient.IsDataAvailable){};
+                        Model? model = ServerClient.Data;
                         
                         if (model == null || model.GetType() != typeof(User)) return;
 
@@ -84,14 +84,14 @@ public partial class Server  {
                         Console.WriteLine($"Proba logowania uzytkownika {user.Username}");
         
                         if (!Login(user)){
-                            fullClient.Send(new Message("Zle haslo"));
+                            ServerClient.Send(new Message("Zle haslo"));
                             return;
                         } 
-                        fullClient.Send(new Message("Zalogowano pomyslnie"));
+                        ServerClient.Send(new Message("Zalogowano pomyslnie"));
                         
-                        fullClient.user = user;
+                        ServerClient.user = user;
                         
-                        Clients.Add(fullClient);
+                        Clients.Add(ServerClient);
                         Console.WriteLine(Clients.Count);
                     });
                     while (!IsRead){};
