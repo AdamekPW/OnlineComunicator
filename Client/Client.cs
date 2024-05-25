@@ -6,18 +6,30 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 public class Client : NetworkStreamManager {
-	public TcpClient tcpClient;
+	public TcpClient? tcpClient;
 	public User user = null!;
+	private string _serverIP;
+	private int _port;
+	public bool IsConnected = false;
+	public void Connect()
+	{
+		try
+		{
+			tcpClient = new TcpClient(_serverIP, _port);
+			this.stream = tcpClient.GetStream();
+			IsConnected = true;
+			Run();
+		} catch 
+		{
+			IsConnected = false;
+		}
+	}
 	public Client(string ServerIP, int ServerPort){
-		tcpClient = new TcpClient(ServerIP, ServerPort);
-		this.stream = tcpClient.GetStream();
-		Run();
+		_serverIP = ServerIP;
+		_port = ServerPort;
+		
 	}
-	public Client(TcpClient tcpClient){
-		this.tcpClient = tcpClient;
-		this.stream = tcpClient.GetStream();
-		Run();
-	}
+
 	//for sending data
 	private bool _isSendDataAvailable = false;
 	private ReaderWriterLockSlim _isSendDataAvailableLock = new();

@@ -10,22 +10,28 @@ namespace Communicator
 	{
 
 		//public CustomClient customClient = new();
-		public Client client;
-		private Task ServerTask;
+		public Client client = new("127.0.0.1", 48025);
 		public User Me = new("Adam", "Adasek");
+		
+		
 		public MainViewModel()
 		{
-			
-			
-
+			Messages = new ObservableCollection<Message>();
+			Chats = new ObservableCollection<Message>() {
+				new Message("Chat1"),
+				new Message("Chat2"),
+				new Message("Chat3"),
+				new Message("Chat4")
+			};
 			
 		}
 		public void Init()
-		{
-			client = new("127.0.0.1", 48025);
+		{			
+			client.Connect();
+			if (!client.IsConnected) return;
+
 			client.Send(Me);
-			Messages = new ObservableCollection<Message>();
-			ServerTask = Task.Run(() =>
+			Task.Run(() =>
 			{
 
 				while (true)
@@ -46,10 +52,21 @@ namespace Communicator
 
 				}
 			});
+			
 		}
 
+		private ObservableCollection<Message> _chats = new();
+		public ObservableCollection<Message> Chats
+		{
+			get { return _chats; }
+			set
+			{
+				_chats = value;
+				OnPropertyChanged(nameof(Chats));
+			}
+		}
 
-		private ObservableCollection<Message> _messages;
+		private ObservableCollection<Message> _messages = new();
 		public ObservableCollection<Message> Messages
 		{
 			get { return _messages; }

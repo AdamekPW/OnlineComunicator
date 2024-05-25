@@ -47,8 +47,10 @@ public partial class MainWindow : Window
 		string text = MessageTextBox.Text.Trim();
 		if (text.Length == 0) return; 
 		Message message = new Message(text, DateTime.Now, "Adam", true);
-        //MainViewModel.AddMessage(message);
         MessageTextBox.Text = "";
-        MainViewModel.client.Send(message);
+		if (MainViewModel.client != null)
+		{
+			MainViewModel.client.Send(message);
+		}
 	}
 }
