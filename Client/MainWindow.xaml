@@ -16,23 +16,37 @@
         </Grid>
 
         <!-- Okno wiadomości -->
-        <Grid Margin="5 50 5 50">
+        <Grid Margin="0 50 5 50">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.3*"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0" >
+                <Border BorderBrush="#0078D7" BorderThickness="0 0 3 0">
+                    
+                
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding Chats}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border>
-                                    <TextBlock Text="{Binding Data}"></TextBlock>
+                                <Border BorderThickness="2" 
+                                        CornerRadius="7" 
+                                        BorderBrush="LightBlue"
+                                        Margin="3 4 3 0"
+                                        VerticalAlignment="Stretch"
+                                        HorizontalAlignment="Stretch"
+                                        
+                                        >
+                                    <TextBlock HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"
+                                               Height="22"
+                                               Text="{Binding Data}"></TextBlock>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
+                </Border>
             </Grid>
             <Grid Grid.Column="1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
